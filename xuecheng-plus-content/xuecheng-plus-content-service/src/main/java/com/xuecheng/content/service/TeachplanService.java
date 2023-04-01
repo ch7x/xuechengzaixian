@@ -1,7 +1,9 @@
 package com.xuecheng.content.service;
 
+import com.xuecheng.content.model.dto.BindTeachplanMediaDto;
 import com.xuecheng.content.model.dto.SaveTeachplanDto;
 import com.xuecheng.content.model.dto.TeachplanDto;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -46,5 +48,21 @@ public interface TeachplanService {
      * @param teachplanId 课程id
      */
     void moveDown(Long teachplanId);
+
+    /**
+     * @description 教学计划绑定媒资
+     * @param bindTeachplanMediaDto
+     * @return com.xuecheng.content.model.po.TeachplanMedia
+     * @author Mr.M
+     * @date 2022/9/14 22:20
+     */
+    public void associationMedia(BindTeachplanMediaDto bindTeachplanMediaDto);
+
+    /**
+     * 删除教学计划绑定媒资关系
+     * @param teachplanId - 教学计划id
+     * @param mediaId - 媒资id
+     */
+    public void removeAssociationMedia(Long teachplanId, String mediaId);
 }
 

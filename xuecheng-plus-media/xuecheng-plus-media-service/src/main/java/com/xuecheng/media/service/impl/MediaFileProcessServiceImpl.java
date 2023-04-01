@@ -1,6 +1,5 @@
 package com.xuecheng.media.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.xuecheng.media.mapper.MediaFilesMapper;
 import com.xuecheng.media.mapper.MediaProcessHistoryMapper;
 import com.xuecheng.media.mapper.MediaProcessMapper;
@@ -71,7 +70,8 @@ public class MediaFileProcessServiceImpl implements MediaFileProcessService {
         // 如果任务执行成功
         // 文件表记录
         MediaFiles mediaFiles = mediaFilesMapper.selectById(fileId);
-        // 更新media_file表中的url
+        url = "/video/" + url;
+        // 更新media_file表中的url 这里要加一个video不然浏览器没法访问
         mediaFiles.setUrl(url);
         mediaFilesMapper.updateById(mediaFiles);
 

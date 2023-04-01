@@ -74,7 +74,7 @@ public class VideoTask {
                     // 文件id就是md5值
                     String fileId = mediaProcess.getFileId();
 
-                    // 开启任务
+                    // 开始抢任务
                     boolean b = mediaFileProcessService.startTask(taskId);
                     if (!b) {
                         log.debug("抢占任务失败,任务id:{}", taskId);
@@ -87,7 +87,7 @@ public class VideoTask {
                     // objectName
                     String objectName = mediaProcess.getFilePath();
 
-                    // 下载minio的视频到本地
+                    // 下载minio的视频到minio
                     File file = mediaFileService.downloadFileFromMinIO(bucket, objectName);
                     if (file == null) {
                         log.debug("下载视频出错,任务id:{},bucket:{},objectName:{}", taskId, bucket, objectName);
@@ -127,7 +127,7 @@ public class VideoTask {
                     //mp4文件的url
                     String url = getFilePath(fileId, ".mp4");
 
-                    // 上传到minio
+                    // 上传到minio     这里的url是对象名
                     boolean b1 = mediaFileService.addMediaFilesToMinIO(mp4File.getAbsolutePath(), "video/mp4", bucket, url);
                     if (!b1) {
                         log.debug("上传mp4到minio失败,taskId:{}", taskId);
