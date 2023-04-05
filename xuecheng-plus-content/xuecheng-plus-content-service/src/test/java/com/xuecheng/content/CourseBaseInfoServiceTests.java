@@ -16,7 +16,7 @@ public class CourseBaseInfoServiceTests {
 
 
     @Test
-    void testCourseBaseInfoService() { 
+    void testCourseBaseInfoService() {
 
         //查询条件模型
         QueryCourseParamsDto courseParamsDto = new QueryCourseParamsDto();
@@ -28,7 +28,7 @@ public class CourseBaseInfoServiceTests {
         pageParams.setPageNo(1L);
         pageParams.setPageSize(3L);
 
-        PageResult<CourseBase> courseBasePageResult = courseBaseInfoService.queryCourseBaseList(pageParams, courseParamsDto);
+        PageResult<CourseBase> courseBasePageResult = courseBaseInfoService.queryCourseBaseList(null, pageParams, courseParamsDto);
 
         System.err.println(courseBasePageResult);
     }

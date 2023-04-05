@@ -41,7 +41,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
     CourseTeacherMapper courseTeacherMapper;
 
     @Override
-    public PageResult<CourseBase> queryCourseBaseList(PageParams pageParams, QueryCourseParamsDto courseParamsDto) {
+    public PageResult<CourseBase> queryCourseBaseList(Long companyId, PageParams pageParams, QueryCourseParamsDto courseParamsDto) {
 
         //拼装查询条件
         LambdaQueryWrapper<CourseBase> queryWrapper = new LambdaQueryWrapper<>();
@@ -58,15 +58,18 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
                 CourseBase::getStatus,
                 courseParamsDto.getPublishStatus());
 
-        //page对象
+        // 根据培训机构id拼装查询条件
+        queryWrapper.eq(CourseBase::getCompanyId,companyId);
+
+        // page对象
         Page<CourseBase> page = new Page<>(pageParams.getPageNo(), pageParams.getPageSize());
 
-        //查询
+        // 查询
         Page<CourseBase> pageResult = courseBaseMapper.selectPage(page, queryWrapper);
         List<CourseBase> items = pageResult.getRecords();
         long total = pageResult.getTotal();
 
-        //返回结果
+        // 返回结果
 
         return new PageResult<>(items, total, pageParams.getPageNo(), pageParams.getPageSize());
     }
@@ -221,8 +224,8 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
 
         //封装课程营销信息
         CourseMarket courseMarket = new CourseMarket();
-        courseMarket.setId(courseId);
         BeanUtils.copyProperties(dto, courseMarket);
+        courseMarket.setId(courseId);
 
         if (courseBaseMapper.updateById(courseBase) <= 0 || saveCourseMarket(courseMarket) <= 0) {
             XueChengPlusException.cast("修改课程失败");
