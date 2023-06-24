@@ -28,6 +28,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
@@ -39,6 +40,8 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 课程发布相关接口实现
@@ -70,6 +73,9 @@ public class CoursePublishServiceImpl implements CoursePublishService {
 
     @Autowired
     MediaServiceClient mediaServiceClient;
+
+    @Autowired
+    RedisTemplate redisTemplate;
 
     @Override
     public CoursePreviewDto getCoursePreviewInfo(Long courseId) {
@@ -218,10 +224,10 @@ public class CoursePublishServiceImpl implements CoursePublishService {
 
             String upload = mediaServiceClient.upload(multipartFile, "course/" + courseId + ".html");
             if (upload == null) {
-                log.debug("远程调用走了降级逻辑得到上传结果为null,课程id:{}",courseId);
+                log.debug("远程调用走了降级逻辑得到上传结果为null,课程id:{}", courseId);
                 XueChengPlusException.cast("上传静态文件过程中存在异常");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             XueChengPlusException.cast("上传静态文件过程中存在异常");
         }
@@ -245,14 +251,35 @@ public class CoursePublishServiceImpl implements CoursePublishService {
 
     /**
      * 根据课程id查询课程发布信息
+     *
      * @param courseId
      * @return
      */
-    public CoursePublish getCoursePublish(Long courseId){
+    public CoursePublish getCoursePublish(Long courseId) {
         CoursePublish coursePublish = coursePublishMapper.selectById(courseId);
-        return coursePublish ;
+        return coursePublish;
     }
 
-
+    @Override
+    public CoursePublish getCoursePublishCache(Long courseId) {
+        Object jsonObj = redisTemplate.opsForValue().get("course:" + courseId);
+        if (jsonObj != null){
+            // 缓存中有直接返回数据
+            String jsonString = jsonObj.toString();
+            if ("null".equals(jsonString)){
+                return null;
+            }
+            CoursePublish coursePublish = JSON.parseObject(jsonString, CoursePublish.class);
+            return coursePublish;
+        }else {
+            // 查询数据库
+            CoursePublish coursePublish = coursePublishMapper.selectById(courseId);
+//            if (coursePublish != null){
+                // 查询完成存储到redis
+                redisTemplate.opsForValue().set("course:" + courseId,JSON.toJSONString(coursePublish),30+new Random().nextInt(100), TimeUnit.SECONDS);
+//            }
+            return coursePublish;
+        }
+    }
 }
 

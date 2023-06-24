@@ -24,7 +24,7 @@
     <div class="banner-bg"></div>
     <div class="banner-info">
         <div class="banner-left">
-            <p>${model.courseBase.mtName!''}<span>\ ${model.courseBase.stName!''}</span></p>
+            <p>${model.courseBase.mtName}<span>\ ${model.courseBase.stName}</span></p>
             <p class="tit">${model.courseBase.name}</p>
             <p class="pic">
                 <#if model.courseBase.charge=='201000'>
@@ -58,9 +58,9 @@
         </div>
         <div class="banner-rit">
             <p>
-                <a href="http://www.51xuecheng.cn/course/preview/learning.html?id=${model.courseBase.id}" target="_blank">
+                <a href="http://www.sevenxc.cn/course/preview/learning.html?id=${model.courseBase.id}" target="_blank">
                     <#if model.courseBase.pic??>
-                        <img src="http://file.51xuecheng.cn${model.courseBase.pic}" alt="" width="270" height="156">
+                        <img src="http://file.sevenxc.cn${model.courseBase.pic}" alt="" width="270" height="156">
                     <#else>
                         <img src="/static/img/widget-video.png" alt="" width="270" height="156">
                     </#if>
@@ -180,7 +180,7 @@
                                 <div class="drop-down" style="height: 260px;">
                                     <ul class="list-box">
                                         <#list firstNode.teachPlanTreeNodes as secondNode>
-                                            <li><a href="http://www.51xuecheng.cn/course/preview/learning.html?id=${model.courseBase.id}&chapter=${secondNode.teachplanMedia.teachplanId!''}" target="_blank">${secondNode.pname}</a></li>
+                                            <li><a href="http://www.sevenxc.cn/course/preview/learning.html?id=${model.courseBase.id}&chapter=${secondNode.teachplanMedia.teachplanId!''}" target="_blank">${secondNode.pname}</a></li>
                                         </#list>
                                     </ul>
                                 </div>
